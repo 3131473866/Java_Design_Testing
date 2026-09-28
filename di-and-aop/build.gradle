@@ -1,0 +1,50 @@
+plugins {	
+	id 'java'
+	id 'application'
+	id 'org.springframework.boot' version '3.3.5'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+mainClassName = 'com.example.diaop.DiAopApplication'
+
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'javax.inject:javax.inject:1'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	implementation 'org.springframework.boot:spring-boot-starter'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}
+
+def defaultProfile = 'task2'
+
+test {
+	systemProperties = System.properties
+	useJUnitPlatform()
+}
+
+bootRun {
+	defaultProfile.contains('--spring.profiles.active=')
+	if (args.findIndexOf { arg -> arg.contains('--spring.profiles.active=') } == -1) {
+		args += ('--spring.profiles.active='+defaultProfile)
+	}
+}
